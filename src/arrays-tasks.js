@@ -272,8 +272,11 @@ function distinct(arr) {
  *    createNDimensionalArray(4, 2) => [[[[0, 0], [0, 0]], [[0, 0], [0, 0]]], [[[0, 0], [0, 0]], [[0, 0], [0, 0]]]]
  *    createNDimensionalArray(1, 1) => [0]
  */
-function createNDimensionalArray(/* n, size USE FILL */) {
-  throw new Error('Not implemented');
+function createNDimensionalArray(n, size) {
+  if (n === 1) {
+    return Array(size).fill(0);
+  }
+  return Array(size).fill(createNDimensionalArray(n - 1, size));
 }
 
 /**
@@ -321,9 +324,12 @@ function selectMany(arr, childrenSelector) {
  *   calculateBalance([ [ 10, 8 ], [ 1, 5 ] ])  => (10 - 8) + (1 - 5) = 2 + -4 = -2
  *   calculateBalance([]) => 0
  */
-function calculateBalance(/* arr */) {
-  /* return arr.reduce((item) => acc + item.reduce, 0); */
-  throw new Error('Not implemented');
+function calculateBalance(arr) {
+  if (arr.length === 0) {
+    return 0;
+  }
+  const arr1 = arr.flat();
+  return arr1[0] - arr1[1] + arr1[2] - arr1[3];
 }
 
 /**
@@ -338,8 +344,21 @@ function calculateBalance(/* arr */) {
  *    createChunks(['a', 'b', 'c', 'd', 'e'], 2) => [['a', 'b'], ['c', 'd'], ['e']]
  *    createChunks([10, 20, 30, 40, 50], 1) => [[10], [20], [30], [40], [50]]
  */
-function createChunks(/* arr, chunkSize */) {
-  throw new Error('Not implemented');
+function createChunks(arr, chunkSize) {
+  const chunks = [];
+  let count = 0;
+  arr.map((item, index) => {
+    count += 1;
+    if (count === chunkSize) {
+      chunks.push(arr.slice(index - chunkSize + 1, index + 1));
+      count = 0;
+    }
+    if (index === arr.length - 1 && count < chunkSize && count !== 0) {
+      chunks.push(arr.slice(index - count + 1));
+    }
+    return item;
+  });
+  return chunks;
 }
 
 /**
@@ -498,8 +517,23 @@ function findCommonElements(arr1, arr2) {
  *    findLongestIncreasingSubsequence([3, 10, 2, 1, 20]) => 2
  *    findLongestIncreasingSubsequence([50, 3, 10, 7, 40, 80]) => 3
  */
-function findLongestIncreasingSubsequence(/* nums */) {
-  throw new Error('Not implemented');
+function findLongestIncreasingSubsequence(nums) {
+  let count = 1;
+  const result = [];
+  nums.map((item, index) => {
+    if (item < nums[index + 1] && nums[index + 1]) {
+      count += 1;
+    } else {
+      result.push(count);
+      count = 1;
+    }
+    return item;
+  });
+  return +result
+    .flat()
+    .sort((a, b) => b - a)
+    .slice(0, 1)
+    .join();
 }
 
 /**
@@ -535,8 +569,16 @@ function propagateItemsByPositionIndex(arr) {
  *    shiftArray(['a', 'b', 'c', 'd'], -1) => ['b', 'c', 'd', 'a']
  *    shiftArray([10, 20, 30, 40, 50], -3) => [40, 50, 10, 20, 30]
  */
-function shiftArray(/* arr, n */) {
-  throw new Error('Not implemented');
+function shiftArray(arr, n) {
+  const shift = [];
+  if (Math.sign(n) !== -1) {
+    shift.push(arr.slice(n + 1));
+    shift.push(arr.slice(0, n + 1));
+  } else {
+    shift.push(arr.slice(Math.abs(n)));
+    shift.push(arr.slice(0, Math.abs(n)));
+  }
+  return shift.flat();
 }
 
 /**
